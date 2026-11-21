@@ -1,0 +1,126 @@
+// MySQL (works with MariaDB too). Set DATABASE_URL, e.g.
+//   mysql://USER:PASSWORD@127.0.0.1:3306/DATABASE
+// then `npx prisma migrate deploy` creates/updates the tables.
+// Note: TEXT columns have no database default (MySQL forbids it); the code always supplies a value.
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Product {
+  id             Int      @id @default(autoincrement())
+  slug           String   @unique @db.VarChar(191)
+  name           String   @db.VarChar(255)
+  brand          String   @db.VarChar(100)
+  category       String   @db.VarChar(100)
+  price          Int      @default(0)
+  mrp            Int      @default(0)
+  stock          Int      @default(0)
+  featured       Boolean  @default(false)
+  active         Boolean  @default(true)
+  priceOnRequest Boolean  @default(false)
+  highlights     String   @db.Text // JSON array of strings
+  description    String   @db.Text
+  images         String   @db.Text // JSON array of URL paths
+  sortOrder      Int      @default(0)
+  weightGrams    Int      @default(300) // packed weight, used for Shiprocket shipments
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([category])
+  @@index([active])
+  @@index([brand])
+}
+
+model Order {
+  id            Int      @id @default(autoincrement())
+  orderId       String   @unique @db.VarChar(64)
+  status        String   @default("PLACED") @db.VarChar(32) // PENDING_PAYMENT, PLACED, CONFIRMED, SHIPPED, DELIVERED, CANCELLED
+  payment       String   @default("COD") @db.VarChar(32) // COD or RAZORPAY
+  paymentStatus String   @default("COD") @db.VarChar(32) // COD, PENDING, PAID, FAILED
+  razorpayOrderId      String?  @unique @db.VarChar(64)
+  razorpayPaymentId    String?  @db.VarChar(64)
+  shiprocketOrderId    Int?
+  shiprocketShipmentId Int?
+  awb                  String?  @db.VarChar(64)
+  courier              String?  @db.VarChar(150)
+  labelUrl             String?  @db.VarChar(1000)
+  shippingStatus       String   @default("") @db.VarChar(100)
+  shipAttempts         Int      @default(0)
+  shippingUpdatedAt    DateTime?
+  name      String   @db.VarChar(200)
+  phone     String   @db.VarChar(20)
+  email     String   @default("") @db.VarChar(255)
+  address   String   @db.VarChar(600)
+  city      String   @db.VarChar(100)
+  state     String   @db.VarChar(100)
+  pincode   String   @db.VarChar(10)
+  subtotal  Int
+  shipping  Int
+  total     Int
+  items     String   @db.Text // JSON array: slug, name, qty, price
+  notes     String   @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status])
+  @@index([createdAt])
+}
+
+// One row per message we tried to send. The unique key makes sending idempotent
+// (a retried webhook or double click can never email the same event twice).
+model Notification {
+  id        Int      @id @default(autoincrement())
+  orderId   String   @db.VarChar(64)
+  channel   String   @db.VarChar(16) // EMAIL, SMS
+  event     String   @db.VarChar(32) // confirmed, shipped, delivered, cancelled, owner_new
+  recipient String   @db.VarChar(255)
+  status    String   @db.VarChar(16) // SENDING, SENT, FAILED, SKIPPED
+  error     String   @default("") @db.VarChar(500)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([orderId, channel, event])
+  @@index([orderId])
+}
+
+// Staff accounts for the admin panel. Roles: OWNER (everything), MANAGER (products + orders), ORDERS (orders only).
+model User {
+  id                 Int       @id @default(autoincrement())
+  email              String    @unique @db.VarChar(191)
+  name               String    @db.VarChar(100)
+  role               String    @default("ORDERS") @db.VarChar(16)
+  passwordHash       String    @db.VarChar(255)
+  active             Boolean   @default(true)
+  mustChangePassword Boolean   @default(false)
+  sessionVersion     Int       @default(0) // bump to sign the user out everywhere
+  lastLoginAt        DateTime?
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+}
+
+model AuditLog {
+  id        Int      @id @default(autoincrement())
+  userId    Int?
+  userEmail String   @db.VarChar(255)
+  action    String   @db.VarChar(100)
+  target    String   @default("") @db.VarChar(255)
+  detail    String   @default("") @db.VarChar(500)
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+}
+
+// Photos uploaded in the admin. Stored in the database (not on disk) so they survive redeploys and are backed up with it.
+model UploadedImage {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique @db.VarChar(100) // e.g. "mwq1x2-ab12cd34.webp", served at /uploads/<name>
+  mime      String   @db.VarChar(50)
+  size      Int
+  data      Bytes    @db.LongBlob
+  createdAt DateTime @default(now())
+}
