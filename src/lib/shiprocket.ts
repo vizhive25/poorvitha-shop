@@ -61,7 +61,7 @@ export async function createShiprocketOrder(o: ShipOrderInput) {
     billing_pincode: Number(o.pincode),
     billing_state: o.state,
     billing_country: "India",
-    billing_email: o.email || process.env.SHIPROCKET_FALLBACK_EMAIL || process.env.SHOP_EMAIL || "orders@poorvithamobiles.example",
+    billing_email: o.email || process.env.SHIPROCKET_FALLBACK_EMAIL || process.env.SHOP_EMAIL || "poorvithamobiles25@gmail.com",
     billing_phone: Number(o.phone),
     shipping_is_billing: true,
     order_items: o.items.map((i) => ({ name: i.name, sku: i.slug, units: i.qty, selling_price: i.price })),

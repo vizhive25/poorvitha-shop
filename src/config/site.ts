@@ -9,10 +9,10 @@ export const site = {
   phone2: "+91 98442 46249", // customer support
   phones: "+91 96202 46249 / +91 98442 46249",
   whatsapp: "919620246249", // digits only, with country code. CONFIRM this number is on WhatsApp
-  email: "support@poorvithamobiles.example", // PLACEHOLDER
-  address: "Shop No. XX, Street Name, City, State – PIN CODE", // PLACEHOLDER
-  gstin: "GSTIN: XXXXXXXXXXXXXXX", // PLACEHOLDER
-  hours: "Mon–Sat, 10:00 AM – 9:00 PM", // PLACEHOLDER
+  email: "poorvithamobiles25@gmail.com",
+  address: "No.15/2, 20th Cross, 5th Main Road, K.P Agrahara, Magadi Main Road, Bangalore – 560023",
+  gstin: "GSTIN: 29BJTPR0034E2Z0",
+  hours: "10:00 AM – 9:00 PM",
   freeShippingAbove: 499,
   shippingFee: 49,
 };
