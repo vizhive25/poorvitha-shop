@@ -12,13 +12,14 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
+  experimental: { inlineCss: true }, // puts the small stylesheet inside the page so it no longer blocks the first paint
   // One official address: send www.poorvithamobiles.com to poorvithamobiles.com so search engines see a single site.
   async redirects() {
     return [{ source: "/:path*", has: [{ type: "host" as const, value: "www.poorvithamobiles.com" }], destination: "https://poorvithamobiles.com/:path*", permanent: true }];
   },
   async headers() {
-    // Product photos and the logo rarely change: let browsers and the CDN keep them for a week.
-    const longCache = [{ key: "Cache-Control", value: "public, max-age=604800, stale-while-revalidate=86400" }];
+    // Product photos and the logo rarely change: let browsers and the CDN keep them for a month.
+    const longCache = [{ key: "Cache-Control", value: "public, max-age=2592000, stale-while-revalidate=86400" }];
     return [
       { source: "/:path*", headers: securityHeaders },
       { source: "/products/:path*", headers: longCache },

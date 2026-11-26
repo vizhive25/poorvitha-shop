@@ -24,4 +24,8 @@ export const getCategory = (slug: string) => categories.find((c) => c.slug === s
 /** Trims a product to what a product card needs, so listing pages don't ship long descriptions to the browser. */
 export const slim = (p: Product): Product => ({ ...p, highlights: [], description: "", images: p.images?.slice(0, 1) });
 
+/** Small (480px) copy of a catalogue photo, for cards and tiles. Other images (e.g. admin uploads) are returned unchanged. */
+export const thumb = (src: string): string =>
+  src.startsWith("/products/") && !src.startsWith("/products/_t/") ? `/products/_t/${src.slice("/products/".length)}.webp` : src;
+
 export const inr = (n: number) => "₹" + n.toLocaleString("en-IN");

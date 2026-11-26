@@ -1,13 +1,14 @@
 "use client";
 import Link from "next/link";
-import { Product, inr } from "@/lib/shop";
+import { Product, inr, thumb } from "@/lib/shop";
 import { useCart } from "./CartProvider";
 
-export function ProductImage({ p, className = "", src }: { p: Product; className?: string; src?: string }) {
+export function ProductImage({ p, className = "", src, small = false }: { p: Product; className?: string; src?: string; small?: boolean }) {
   const img = src ?? p.images?.[0];
   if (img)
     // eslint-disable-next-line @next/next/no-img-element
-    return <img src={img} alt={p.name} width={600} height={600} loading="lazy" decoding="async" className={`aspect-square w-full rounded-lg bg-white object-contain ${className}`} />;
+    return <img src={small ? thumb(img) : img} alt={p.name} width={600} height={600} loading="lazy" decoding="async"
+      onError={small ? (e) => { if (e.currentTarget.src.includes("/_t/")) e.currentTarget.src = img; } : undefined} className={`aspect-square w-full rounded-lg bg-white object-contain ${className}`} />;
   const hue = (p.brand.charCodeAt(0) * 37 + p.category.length * 23) % 360;
   return (
     <div className={`flex aspect-square items-center justify-center rounded-lg text-center ${className}`}
@@ -24,7 +25,7 @@ export default function ProductCard({ p }: { p: Product }) {
   return (
     <div className="group flex flex-col">
       <Link href={`/product/${p.slug}`} className="relative block overflow-hidden rounded-2xl bg-neutral-100">
-        <ProductImage p={p} className="rounded-none bg-transparent mix-blend-multiply transition duration-300 group-hover:scale-105" />
+        <ProductImage p={p} small className="rounded-none bg-transparent mix-blend-multiply transition duration-300 group-hover:scale-105" />
         {off > 0 && <span className="absolute left-2 top-2 rounded-full bg-neutral-900 px-2 py-0.5 text-[11px] font-semibold text-white">{off}% off</span>}
         {!p.priceOnRequest && p.stock < 1 && <span className="absolute right-2 top-2 rounded-full bg-white px-2 py-0.5 text-[11px] font-semibold text-neutral-600">Sold out</span>}
       </Link>

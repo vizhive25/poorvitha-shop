@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { categories, slim } from "@/lib/shop";
+import { categories, slim, thumb } from "@/lib/shop";
 import { listProducts } from "@/lib/catalog";
 import HeroCarousel, { Slide } from "@/components/HeroCarousel";
 import ProductRow from "@/components/ProductRow";
@@ -53,7 +53,7 @@ export default async function Home() {
             <Link key={c.slug} href={`/category/${c.slug}`} className="group overflow-hidden rounded-2xl bg-neutral-100 p-4 text-center transition hover:bg-neutral-200">
               <div className="flex h-24 items-center justify-center">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                {catImg(c.slug) && <img src={catImg(c.slug)} alt="" loading="lazy" className="max-h-24 object-contain mix-blend-multiply transition group-hover:scale-110" />}
+                {catImg(c.slug) && <img src={thumb(catImg(c.slug)!)} alt="" width={96} height={96} loading="lazy" decoding="async" className="max-h-24 object-contain mix-blend-multiply transition group-hover:scale-110" />}
               </div>
               <p className="mt-2 text-sm font-semibold">{c.name}</p>
             </Link>
@@ -82,7 +82,7 @@ export default async function Home() {
             {[...marquee, ...marquee].map((p, n) => (
               <Link key={p.slug + n} href={`/product/${p.slug}`} className="flex h-40 w-40 shrink-0 items-center justify-center rounded-2xl bg-white/95 p-3 transition hover:scale-105">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={p.images![0]} alt={p.name} loading="lazy" className="max-h-full max-w-full object-contain" />
+                <img src={thumb(p.images![0])} alt={p.name} width={160} height={160} loading="lazy" decoding="async" className="max-h-full max-w-full object-contain" />
               </Link>
             ))}
           </div>

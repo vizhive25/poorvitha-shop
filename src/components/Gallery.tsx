@@ -2,6 +2,7 @@
 import { useState } from "react";
 import type { Product } from "@/lib/shop";
 import { ProductImage } from "./ProductCard";
+import { thumb } from "@/lib/shop";
 
 export default function Gallery({ p }: { p: Product }) {
   const imgs = p.images ?? [];
@@ -15,7 +16,7 @@ export default function Gallery({ p }: { p: Product }) {
             // eslint-disable-next-line @next/next/no-img-element
             <button key={src} onClick={() => setI(n)} aria-label={`Show image ${n + 1}`}
               className={`h-16 w-16 shrink-0 rounded-xl border bg-neutral-100 p-1 ${n === i ? "border-neutral-900" : "border-transparent"}`}>
-              <img src={src} alt="" loading="lazy" className="h-full w-full object-contain mix-blend-multiply" />
+              <img src={thumb(src)} alt="" width={64} height={64} loading="lazy" decoding="async" onError={(e) => { if (e.currentTarget.src.includes("/_t/")) e.currentTarget.src = src; }} className="h-full w-full object-contain mix-blend-multiply" />
             </button>
           ))}
         </div>
