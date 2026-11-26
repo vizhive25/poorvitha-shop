@@ -6,6 +6,7 @@ import { parseItems } from "@/lib/orders";
 import { createRazorpayOrder, razorpayEnabled, razorpayKeyId } from "@/lib/razorpay";
 import { expirePendingOrders } from "@/lib/payments";
 import { notifyOrder } from "@/lib/notify";
+import { pincodeServiceable } from "@/lib/shiprocket";
 import { allow, ipOf } from "@/lib/ratelimit";
 
 export const dynamic = "force-dynamic";
@@ -31,6 +32,10 @@ export async function POST(req: Request) {
   if (!Array.isArray(body?.items) || !body.items.length || body.items.length > 50)
     return NextResponse.json({ error: "Cart is empty." }, { status: 400 });
 
+  // Can a courier reach this PIN code (with COD if chosen)? If Shiprocket can't be asked, we allow the order.
+  if ((await pincodeServiceable(customer.pincode, !online)) === false)
+    return NextResponse.json({ error: online ? "Sorry, we can't deliver to this PIN code yet. Please check the PIN code or call us." : "Cash on Delivery isn't available at this PIN code. Please pay online, or call us." }, { status: 400 });
+
   await expirePendingOrders().catch(() => {}); // free up stock held by abandoned payments
 
   const orderId = "PM" + Date.now().toString(36).toUpperCase() + randomBytes(2).toString("hex").toUpperCase();
@@ -54,6 +59,8 @@ export async function POST(req: Request) {
       }
       const shipping = subtotal >= site.freeShippingAbove ? 0 : site.shippingFee;
       total = subtotal + shipping;
+      if (!online && site.codMax > 0 && total > site.codMax)
+        throw new OrderError(`Cash on Delivery is available for orders up to ₹${site.codMax}. Please pay online for this order.`);
       await tx.order.create({
         data: {
           orderId, ...customer, subtotal, shipping, total, items: JSON.stringify(items), notes: "",

@@ -22,9 +22,13 @@ export default function Checkout() {
   const [pending, setPending] = useState<{ orderId: string; rz: RzInit } | null>(null);
   const done = useRef(false);
 
+  const [codMax, setCodMax] = useState(0);              // 0 = no limit
+  const codBlocked = codMax > 0 && total > codMax;
+
   useEffect(() => {
-    fetch("/api/config").then((r) => r.json()).then((d) => { if (d.onlinePayments) { setOnline(true); setMethod("ONLINE"); } }).catch(() => {});
+    fetch("/api/config").then((r) => r.json()).then((d) => { setCodMax(Number(d.codMax) || 0); if (d.onlinePayments) { setOnline(true); setMethod("ONLINE"); } }).catch(() => {});
   }, []);
+  useEffect(() => { if (codBlocked && online) setMethod("ONLINE"); }, [codBlocked, online]);
 
   function openRazorpay(orderId: string, rz: RzInit) {
     if (!window.Razorpay) { setErr("Payment window is still loading. Please try again in a moment."); setBusy(false); return; }
@@ -88,7 +92,7 @@ export default function Checkout() {
           {online && (
             <label className="flex items-center gap-2"><input type="radio" name="payment" checked={method === "ONLINE"} onChange={() => setMethod("ONLINE")} /> Pay online <span className="text-slate-500">(UPI, cards, net banking, wallets)</span></label>
           )}
-          <label className="flex items-center gap-2"><input type="radio" name="payment" checked={method === "COD"} onChange={() => setMethod("COD")} /> Cash on Delivery</label>
+          <label className={`flex items-center gap-2 ${codBlocked ? "text-slate-400" : ""}`}><input type="radio" name="payment" disabled={codBlocked} checked={method === "COD"} onChange={() => setMethod("COD")} /> Cash on Delivery{codBlocked && <span className="text-xs">(available up to {inr(codMax)}; please pay online for this order)</span>}</label>
           {!online && <p className="text-xs text-slate-500">Online payment is currently unavailable.</p>}
         </fieldset>
         {pending && <p className="rounded bg-amber-50 p-3 text-sm text-amber-900">Order {pending.orderId} is waiting for payment. Items are held for 30 minutes.</p>}

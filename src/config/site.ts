@@ -14,6 +14,8 @@ export const site = {
   gstin: "GSTIN: 29BJTPR0034E2Z0",
   hours: "10:00 AM – 9:00 PM",
   grievanceOfficer: "Ravi, Customer Care Officer, Poorvitha Mobiles",
+  // Largest order (₹) allowed as Cash on Delivery; bigger orders must be paid online. 0 = no limit. Override with COD_MAX_AMOUNT.
+  codMax: Number(process.env.COD_MAX_AMOUNT ?? 3000),
   freeShippingAbove: 499,
   shippingFee: 49,
 };

@@ -74,6 +74,31 @@ export async function createShiprocketOrder(o: ShipOrderInput) {
   return { orderId: Number(d.order_id), shipmentId: Number(d.shipment_id) };
 }
 
+const svcCache = new Map<string, { ok: boolean; at: number }>();
+
+/**
+ * Can Shiprocket deliver to this PIN code (with Cash on Delivery if cod=true)?
+ * Returns true/false when Shiprocket answers, and null when it cannot be checked (caller should then allow the order).
+ */
+export async function pincodeServiceable(pincode: string, cod: boolean): Promise<boolean | null> {
+  if (!shiprocketEnabled()) return null;
+  const key = `${pincode}:${cod ? 1 : 0}`;
+  const hit = svcCache.get(key);
+  if (hit && Date.now() - hit.at < 6 * 3600 * 1000) return hit.ok;
+  try {
+    const pickup = process.env.SHIPROCKET_PICKUP_PINCODE || "560023";
+    const d = await call("GET", `/courier/serviceability/?pickup_postcode=${pickup}&delivery_postcode=${encodeURIComponent(pincode)}&cod=${cod ? 1 : 0}&weight=0.5`);
+    const ok = (d?.data?.available_courier_companies?.length ?? 0) > 0;
+    svcCache.set(key, { ok, at: Date.now() });
+    return ok;
+  } catch (e) {
+    // Shiprocket answers 404 "no courier serviceability" for places nobody delivers to; anything else (network, login) is "unknown".
+    if (/serviceab|no courier|not available/i.test((e as Error).message)) { svcCache.set(key, { ok: false, at: Date.now() }); return false; }
+    console.error("serviceability check failed", e);
+    return null;
+  }
+}
+
 /** Assigns a courier (Shiprocket auto-picks one per your account rules) and returns the AWB. */
 export async function assignAwb(shipmentId: number) {
   const d = await call("POST", "/courier/assign/awb", { shipment_id: shipmentId });
