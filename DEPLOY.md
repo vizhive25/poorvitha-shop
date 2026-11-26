@@ -75,7 +75,9 @@ Add two environment variables `ADMIN_RESET_EMAIL` (the owner's email) and `ADMIN
 ### A9. Backups
 - Turn on/keep Hostinger's automatic backups and know how to restore from hPanel.
 - Weekly: phpMyAdmin → **Export** the database (SQL). It contains orders **and photos**. Store the file somewhere other than Hostinger (Google Drive etc.).
+- Easiest: **Admin → Backups → Download full backup** (Owner only). One `.json.gz` file with products, orders, staff, activity log and photos. The Backups page warns when the last download is over 7 days old.
 - Source code is safe in GitHub.
+- **Restore** (only into an empty database, e.g. a freshly created one): set `DATABASE_URL`, run `npx prisma migrate deploy`, then `npm run db:restore -- path/to/backup.json.gz`. It refuses to run if the database already has data. Test this once on a local/spare database before launch.
 
 ### A10. Updating later
 Push to GitHub → Hostinger redeploys (or press Redeploy). The build runs `prisma migrate deploy`, which applies new table changes without deleting data.

@@ -28,6 +28,7 @@ export default async function PanelLayout({ children }: { children: React.ReactN
           <Link href="/admin/orders" className={link}>Orders</Link>
           {can(u.role, "staff") && <Link href="/admin/staff" className={link}>Staff</Link>}
           {can(u.role, "staff") && <Link href="/admin/activity" className={link}>Activity</Link>}
+          {can(u.role, "staff") && <Link href="/admin/backups" className={link}>Backups</Link>}
           {can(u.role, "staff") && <Link href="/admin/launch" className={link}>Launch</Link>}
           <Link href="/" target="_blank" className={`${link} ml-auto`}>View shop ↗</Link>
           <Link href="/admin/account" className={link} title={u.email}>{u.name} · {u.role.toLowerCase()}</Link>
