@@ -13,7 +13,7 @@ export default function Footer() {
         <div>
           <p className="font-semibold text-white">Help</p>
           <ul className="mt-2 space-y-1">
-            {[["about", "About us"], ["contact", "Contact us"], ["shipping-policy", "Shipping policy"], ["return-policy", "Returns & refunds"], ["warranty", "Warranty"], ["privacy-policy", "Privacy policy"], ["terms", "Terms & conditions"]].map(([s, l]) =>
+            {[["about", "About us"], ["contact", "Contact us"], ["shipping-policy", "Shipping policy"], ["return-policy", "Returns & refunds"], ["warranty", "Warranty"], ["privacy-policy", "Privacy policy"], ["terms", "Terms & conditions"], ["grievance", "Grievance redressal"]].map(([s, l]) =>
               <li key={s}><Link href={`/info/${s}`} className="hover:text-white">{l}</Link></li>)}
             <li><Link href="/track" className="hover:text-white">Track your order</Link></li>
           </ul>
