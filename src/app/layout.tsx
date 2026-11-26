@@ -9,6 +9,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(site.url),
   title: { default: `${site.name} – ${site.tagline}`, template: `%s | ${site.name}` },
   description: site.description,
+  alternates: { canonical: "./" }, // every page names itself as the one official URL
   openGraph: { siteName: site.name, type: "website", locale: "en_IN", title: site.name, description: site.description, images: [{ url: "/brand/logo.png", width: 900, height: 584, alt: site.name }] },
 };
 

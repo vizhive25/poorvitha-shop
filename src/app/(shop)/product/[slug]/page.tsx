@@ -24,9 +24,14 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
     "@context": "https://schema.org", "@type": "Product", name: p.name, brand: { "@type": "Brand", name: p.brand }, description: p.description,
     ...(p.priceOnRequest ? {} : { offers: { "@type": "Offer", priceCurrency: "INR", price: p.price, availability: p.stock > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock", url: `${site.url}/product/${p.slug}`, seller: { "@type": "Organization", name: site.name } } }),
   };
+  const crumbs = { "@context": "https://schema.org", "@type": "BreadcrumbList", itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Home", item: site.url },
+    { "@type": "ListItem", position: 2, name: cat?.name ?? "Shop", item: `${site.url}/category/${p.category}` },
+    { "@type": "ListItem", position: 3, name: p.name, item: `${site.url}/product/${p.slug}` }] };
   return (
     <div>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(ld).replace(/</g, "\\u003c") }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(crumbs).replace(/</g, "\\u003c") }} />
       <p className="mb-4 text-sm text-neutral-500"><Link href="/" className="hover:text-neutral-900">Home</Link> / <Link href={`/category/${p.category}`} className="hover:text-neutral-900">{cat?.name}</Link></p>
       <div className="grid gap-8 md:grid-cols-2">
         <Gallery p={p} />
@@ -45,7 +50,15 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
               <a href={`https://wa.me/${site.whatsapp}?text=${encodeURIComponent("Hi, I'd like to know the price of " + p.name)}`} className="mt-3 inline-flex items-center gap-2 rounded-full bg-neutral-900 px-5 py-2 font-semibold text-white hover:bg-neutral-700"><WhatsAppIcon />Enquire on WhatsApp</a>
             </div>
           ) : <AddToCart product={p} />}
-          <p className="mt-4 text-xs text-neutral-500">Sold by {site.name}. Warranty as per brand policy. See <Link className="underline" href="/info/return-policy">return policy</Link>.</p>
+          {!p.priceOnRequest && (
+            <ul className="mt-5 grid gap-2 rounded-2xl bg-neutral-100 p-4 text-sm sm:grid-cols-2">
+              <li><b>Delivery:</b> 3–7 business days across India</li>
+              <li><b>Shipping:</b> {p.price >= site.freeShippingAbove ? "Free on this item" : `Free above ₹${site.freeShippingAbove}, else ₹${site.shippingFee}`}</li>
+              <li><b>Payment:</b> UPI, cards, net banking or Cash on Delivery</li>
+              <li><b>Returns:</b> 7-day replacement for defects</li>
+            </ul>
+          )}
+          <p className="mt-4 text-xs text-neutral-500">Sold by {site.name}. Warranty as per brand policy. See <Link className="underline" href="/info/return-policy">return policy</Link> and <Link className="underline" href="/info/warranty">warranty</Link>.</p>
         </div>
       </div>
     </div>

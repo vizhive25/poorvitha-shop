@@ -21,4 +21,7 @@ export const categories: Category[] = [
 ];
 
 export const getCategory = (slug: string) => categories.find((c) => c.slug === slug);
+/** Trims a product to what a product card needs, so listing pages don't ship long descriptions to the browser. */
+export const slim = (p: Product): Product => ({ ...p, highlights: [], description: "", images: p.images?.slice(0, 1) });
+
 export const inr = (n: number) => "₹" + n.toLocaleString("en-IN");

@@ -8,6 +8,9 @@ import { site } from "@/config/site";
 
 const f = "w-full rounded-xl border border-neutral-300 bg-neutral-50 px-4 py-2.5 outline-none focus:border-neutral-900 focus:bg-white";
 
+// A visible label above each field (placeholders alone disappear while typing and are not read reliably by screen readers).
+const Field = ({ label, children }: { label: string; children: React.ReactNode }) => <label className="block"><span className="mb-1 block text-xs font-medium text-neutral-600">{label}</span>{children}</label>;
+
 type RzInit = { keyId: string; orderId: string; amount: number; name: string; phone: string; email: string };
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 declare global { interface Window { Razorpay?: any } }
@@ -75,25 +78,25 @@ export default function Checkout() {
       <div className="space-y-3 md:col-span-2">
         <h1 className="text-3xl font-extrabold tracking-tight">Checkout</h1>
         <fieldset disabled={!!pending} className="space-y-3">
-          <input name="name" required minLength={2} placeholder="Full name" className={f} autoComplete="name" />
+          <Field label="Full name"><input name="name" required minLength={2} placeholder="Full name" className={f} autoComplete="name" /></Field>
           <div className="grid gap-3 md:grid-cols-2">
-            <input name="phone" required pattern="[6-9][0-9]{9}" title="10-digit Indian mobile number" placeholder="Mobile number" className={f} autoComplete="tel-national" inputMode="numeric" />
-            <input name="email" type="email" placeholder="Email (optional)" className={f} autoComplete="email" />
+            <Field label="Mobile number"><input name="phone" required pattern="[6-9][0-9]{9}" title="10-digit Indian mobile number" placeholder="10-digit mobile number" className={f} autoComplete="tel-national" inputMode="numeric" /></Field>
+            <Field label="Email (optional)"><input name="email" type="email" placeholder="For order updates" className={f} autoComplete="email" /></Field>
           </div>
-          <textarea name="address" required minLength={10} placeholder="Address (house no., street, area)" className={f} rows={3} autoComplete="street-address" />
+          <Field label="Address"><textarea name="address" required minLength={10} placeholder="House no., street, area" className={f} rows={3} autoComplete="street-address" /></Field>
           <div className="grid gap-3 md:grid-cols-3">
-            <input name="city" required placeholder="City" className={f} />
-            <input name="state" required placeholder="State" className={f} />
-            <input name="pincode" required pattern="[1-9][0-9]{5}" title="6-digit PIN code" placeholder="PIN code" className={f} inputMode="numeric" />
+            <Field label="City"><input name="city" required placeholder="City" className={f} autoComplete="address-level2" /></Field>
+            <Field label="State"><input name="state" required placeholder="State" className={f} autoComplete="address-level1" /></Field>
+            <Field label="PIN code"><input name="pincode" required pattern="[1-9][0-9]{5}" title="6-digit PIN code" placeholder="6-digit PIN code" className={f} inputMode="numeric" autoComplete="postal-code" /></Field>
           </div>
         </fieldset>
         <fieldset disabled={!!pending} className="space-y-2 rounded-2xl bg-neutral-100 p-4 text-sm">
           <legend className="px-1 font-semibold">Payment</legend>
           {online && (
-            <label className="flex items-center gap-2"><input type="radio" name="payment" checked={method === "ONLINE"} onChange={() => setMethod("ONLINE")} /> Pay online <span className="text-slate-500">(UPI, cards, net banking, wallets)</span></label>
+            <label className="flex items-center gap-2"><input type="radio" name="payment" checked={method === "ONLINE"} onChange={() => setMethod("ONLINE")} /> Pay online <span className="text-neutral-500">(UPI, cards, net banking, wallets)</span></label>
           )}
-          <label className={`flex items-center gap-2 ${codBlocked ? "text-slate-400" : ""}`}><input type="radio" name="payment" disabled={codBlocked} checked={method === "COD"} onChange={() => setMethod("COD")} /> Cash on Delivery{codBlocked && <span className="text-xs">(available up to {inr(codMax)}; please pay online for this order)</span>}</label>
-          {!online && <p className="text-xs text-slate-500">Online payment is currently unavailable.</p>}
+          <label className={`flex items-center gap-2 ${codBlocked ? "text-neutral-400" : ""}`}><input type="radio" name="payment" disabled={codBlocked} checked={method === "COD"} onChange={() => setMethod("COD")} /> Cash on Delivery{codBlocked && <span className="text-xs">(available up to {inr(codMax)}; please pay online for this order)</span>}</label>
+          {!online && <p className="text-xs text-neutral-500">Online payment is currently unavailable.</p>}
         </fieldset>
         {pending && <p className="rounded bg-amber-50 p-3 text-sm text-amber-900">Order {pending.orderId} is waiting for payment. Items are held for 30 minutes.</p>}
         {err && <p role="alert" className="text-sm text-red-600">{err}</p>}

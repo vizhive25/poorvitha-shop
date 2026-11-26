@@ -7,7 +7,7 @@ export function ProductImage({ p, className = "", src }: { p: Product; className
   const img = src ?? p.images?.[0];
   if (img)
     // eslint-disable-next-line @next/next/no-img-element
-    return <img src={img} alt={p.name} loading="lazy" className={`aspect-square w-full rounded-lg bg-white object-contain ${className}`} />;
+    return <img src={img} alt={p.name} width={600} height={600} loading="lazy" decoding="async" className={`aspect-square w-full rounded-lg bg-white object-contain ${className}`} />;
   const hue = (p.brand.charCodeAt(0) * 37 + p.category.length * 23) % 360;
   return (
     <div className={`flex aspect-square items-center justify-center rounded-lg text-center ${className}`}
@@ -32,12 +32,12 @@ export default function ProductCard({ p }: { p: Product }) {
       <Link href={`/product/${p.slug}`} className="line-clamp-2 min-h-10 text-sm font-medium leading-snug text-neutral-900 hover:underline">{p.name}</Link>
       <div className="mt-1.5 flex items-baseline gap-2">
         <span className="text-base font-bold tracking-tight">{p.priceOnRequest ? "Price on request" : inr(p.price)}</span>
-        {off > 0 && <span className="text-xs text-neutral-400 line-through">{inr(p.mrp)}</span>}
+        {off > 0 && <span className="text-xs text-neutral-500 line-through">{inr(p.mrp)}</span>}
       </div>
       {p.priceOnRequest ? (
-        <Link href={`/product/${p.slug}`} className="mt-3 rounded-full border border-neutral-900 px-3 py-2 text-center text-sm font-semibold text-neutral-900 hover:bg-neutral-900 hover:text-white">Enquire</Link>
+        <Link href={`/product/${p.slug}`} className="mt-3 flex min-h-11 items-center justify-center rounded-full border border-neutral-900 px-3 py-2 text-center text-sm font-semibold text-neutral-900 hover:bg-neutral-900 hover:text-white">Enquire</Link>
       ) : <button onClick={() => add(p)} disabled={p.stock < 1}
-        className="mt-3 rounded-full bg-neutral-900 px-3 py-2 text-sm font-semibold text-white transition hover:bg-neutral-700 disabled:bg-neutral-200 disabled:text-neutral-500">
+        className="mt-3 min-h-11 rounded-full bg-neutral-900 px-3 py-2 text-sm font-semibold text-white transition hover:bg-neutral-700 disabled:bg-neutral-200 disabled:text-neutral-500">
         {p.stock < 1 ? "Out of stock" : "Add to cart"}
       </button>}
     </div>

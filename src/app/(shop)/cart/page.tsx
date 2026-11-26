@@ -15,9 +15,9 @@ export default function CartPage() {
           <div key={l.slug} className="flex items-center justify-between gap-3 rounded-2xl bg-neutral-100 p-4">
             <div><Link href={`/product/${l.slug}`} className="font-medium">{l.name}</Link><p className="text-sm text-neutral-500">{inr(l.price)} each</p></div>
             <div className="flex items-center gap-2">
-              <button aria-label="Decrease" onClick={() => setQty(l.slug, l.qty - 1)} className="h-8 w-8 rounded-full border border-neutral-300 bg-white hover:bg-neutral-200">−</button>
+              <button aria-label="Decrease" onClick={() => setQty(l.slug, l.qty - 1)} className="h-11 w-11 rounded-full border border-neutral-300 bg-white hover:bg-neutral-200">−</button>
               <span className="w-6 text-center">{l.qty}</span>
-              <button aria-label="Increase" onClick={() => setQty(l.slug, l.qty + 1)} className="h-8 w-8 rounded-full border border-neutral-300 bg-white hover:bg-neutral-200">+</button>
+              <button aria-label="Increase" onClick={() => setQty(l.slug, l.qty + 1)} className="h-11 w-11 rounded-full border border-neutral-300 bg-white hover:bg-neutral-200">+</button>
               <span className="w-20 text-right font-semibold">{inr(l.price * l.qty)}</span>
             </div>
           </div>))}

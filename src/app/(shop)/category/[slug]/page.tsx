@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { getCategory } from "@/lib/shop";
+import { getCategory, slim } from "@/lib/shop";
 import { listProducts } from "@/lib/catalog";
 import ProductCard from "@/components/ProductCard";
 
@@ -19,7 +19,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
     <div>
       <h1 className="text-3xl font-extrabold tracking-tight">{c.name}</h1>
       <p className="mb-6 mt-1 text-sm text-neutral-500">{items.length} products · {c.blurb}</p>
-      <div className="grid grid-cols-2 gap-x-4 gap-y-8 md:grid-cols-4">{items.map((p) => <ProductCard key={p.slug} p={p} />)}</div>
+      <div className="grid grid-cols-2 gap-x-4 gap-y-8 md:grid-cols-4 xl:grid-cols-5">{items.map(slim).map((p) => <ProductCard key={p.slug} p={p} />)}</div>
     </div>
   );
 }

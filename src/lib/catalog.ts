@@ -22,6 +22,8 @@ export async function listProducts(opts: { category?: string; q?: string; featur
   const q = opts.q?.trim().toLowerCase();
   if (q) list = list.filter((p) => `${p.name} ${p.brand}`.toLowerCase().includes(q));
   const key = (p: Product) => (p.priceOnRequest ? 1e12 : p.price);
+  // Products without a price go last, so shoppers see things they can buy first (order is otherwise unchanged).
+  if (!opts.sort) list = [...list.filter((p) => !p.priceOnRequest), ...list.filter((p) => p.priceOnRequest)];
   if (opts.sort === "low") list = [...list].sort((a, b) => key(a) - key(b));
   if (opts.sort === "high") list = [...list].sort((a, b) => (b.priceOnRequest ? -1 : b.price) - (a.priceOnRequest ? -1 : a.price));
   return list;

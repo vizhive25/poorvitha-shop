@@ -3,6 +3,7 @@ import Link from "next/link";
 import { db } from "@/lib/db";
 import { listProducts } from "@/lib/catalog";
 import ProductCard from "@/components/ProductCard";
+import { slim } from "@/lib/shop";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "All products" };
@@ -26,7 +27,7 @@ export default async function Shop({ searchParams }: { searchParams: Promise<{ q
         <Link href={`/shop?q=${encodeURIComponent(q)}&sort=${sort}`} className={`rounded-full border px-3 py-1 ${!brand ? "border-neutral-900 bg-neutral-900 text-white" : "border-neutral-300 bg-white hover:border-neutral-900"}`}>All brands</Link>
         {brands.map((b) => <Link key={b} href={`/shop?brand=${encodeURIComponent(b)}&q=${encodeURIComponent(q)}&sort=${sort}`} className={`rounded-full border px-3 py-1 ${brand === b ? "border-neutral-900 bg-neutral-900 text-white" : "border-neutral-300 bg-white hover:border-neutral-900"}`}>{b}</Link>)}
       </div>
-      {list.length ? <div className="grid grid-cols-2 gap-x-4 gap-y-8 md:grid-cols-4">{list.map((p) => <ProductCard key={p.slug} p={p} />)}</div> : <p>No products found.</p>}
+      {list.length ? <div className="grid grid-cols-2 gap-x-4 gap-y-8 md:grid-cols-4 xl:grid-cols-5">{list.map(slim).map((p) => <ProductCard key={p.slug} p={p} />)}</div> : <p>No products found.</p>}
     </div>
   );
 }

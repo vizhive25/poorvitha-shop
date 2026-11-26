@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { categories } from "@/lib/shop";
+import { categories, slim } from "@/lib/shop";
 import { listProducts } from "@/lib/catalog";
 import HeroCarousel, { Slide } from "@/components/HeroCarousel";
 import ProductRow from "@/components/ProductRow";
@@ -17,7 +17,7 @@ const slideDefs = [
 export const dynamic = "force-dynamic";
 
 export default async function Home() {
-  const products = await listProducts();
+  const products = (await listProducts()).map(slim);
   const bySlug = new Map(products.map((p) => [p.slug, p]));
   const slides: Slide[] = slideDefs.flatMap((d) => {
     const p = bySlug.get(d.slug);
@@ -35,6 +35,7 @@ export default async function Home() {
 
   return (
     <div className="space-y-16">
+      <h1 className="sr-only">{site.name} – mobiles, accessories, smartwatches and audio, delivered across India</h1>
       {slides.length > 0 && <HeroCarousel slides={slides} />}
 
       <Reveal>

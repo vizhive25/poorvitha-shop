@@ -5,7 +5,7 @@ import { InstagramIcon, MapPinIcon } from "./Icons";
 export default function Footer() {
   return (
     <footer className="mt-16 bg-neutral-950 text-sm text-neutral-400">
-      <div className="mx-auto grid max-w-6xl gap-8 px-4 py-10 md:grid-cols-3">
+      <div className="mx-auto grid max-w-7xl gap-8 px-4 py-10 md:grid-cols-3">
         <div>
           <p className="text-lg font-bold text-white">{site.name}</p>
           <p className="mt-2">{site.tagline}</p>
