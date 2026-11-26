@@ -26,6 +26,7 @@ model Product {
   highlights     String   @db.Text // JSON array of strings
   description    String   @db.Text
   images         String   @db.Text // JSON array of URL paths
+  videos         String?  @db.Text // JSON array of YouTube / Instagram post links, shown as embedded players
   sortOrder      Int      @default(0)
   weightGrams    Int      @default(300) // packed weight, used for Shiprocket shipments
   createdAt      DateTime @default(now())

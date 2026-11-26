@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getCategory, inr } from "@/lib/shop";
+import { getCategory, inr, videoEmbed } from "@/lib/shop";
 import { getProductBySlug } from "@/lib/catalog";
 import Gallery from "@/components/Gallery";
 import AddToCart from "@/components/AddToCart";
@@ -24,6 +24,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
     "@context": "https://schema.org", "@type": "Product", name: p.name, brand: { "@type": "Brand", name: p.brand }, description: p.description,
     ...(p.priceOnRequest ? {} : { offers: { "@type": "Offer", priceCurrency: "INR", price: p.price, availability: p.stock > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock", url: `${site.url}/product/${p.slug}`, seller: { "@type": "Organization", name: site.name } } }),
   };
+  const videos = (p.videos ?? []).map((v) => videoEmbed(v)).filter((v): v is NonNullable<ReturnType<typeof videoEmbed>> => !!v);
   const crumbs = { "@context": "https://schema.org", "@type": "BreadcrumbList", itemListElement: [
     { "@type": "ListItem", position: 1, name: "Home", item: site.url },
     { "@type": "ListItem", position: 2, name: cat?.name ?? "Shop", item: `${site.url}/category/${p.category}` },
@@ -61,6 +62,18 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
           <p className="mt-4 text-xs text-neutral-500">Sold by {site.name}. Warranty as per brand policy. See <Link className="underline" href="/info/return-policy">return policy</Link> and <Link className="underline" href="/info/warranty">warranty</Link>.</p>
         </div>
       </div>
+      {videos.length > 0 && (
+        <section className="mt-10" aria-label="Product videos">
+          <h2 className="mb-3 text-xl font-extrabold tracking-tight">Watch it in action</h2>
+          <div className="grid gap-4 md:grid-cols-2">
+            {videos.map((v) => (
+              <div key={v.src} className={`overflow-hidden rounded-2xl bg-neutral-100 ${v.kind === "youtube" ? "aspect-video" : "mx-auto h-[560px] w-full max-w-[400px]"}`}>
+                <iframe src={v.src} title={`${p.name} video`} loading="lazy" referrerPolicy="strict-origin-when-cross-origin" allow="encrypted-media; picture-in-picture; fullscreen" allowFullScreen className="h-full w-full border-0" />
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
     </div>
   );
 }

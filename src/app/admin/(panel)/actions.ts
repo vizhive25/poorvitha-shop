@@ -7,7 +7,7 @@ import { Prisma } from "@prisma/client";
 import { db } from "@/lib/db";
 import { requirePerm } from "@/lib/auth";
 import { audit } from "@/lib/audit";
-import { categories } from "@/lib/shop";
+import { categories, videoEmbed } from "@/lib/shop";
 import { ORDER_STATUSES } from "@/lib/orders";
 
 
@@ -30,6 +30,8 @@ export async function saveProduct(formData: FormData) {
   try { const v = JSON.parse(str(formData.get("images"), 20000)); if (Array.isArray(v)) images = v.map(String).filter((u) => u.startsWith("/") || u.startsWith("https://")).slice(0, 12); } catch {}
   const highlights = str(formData.get("highlights"), 4000).split("\n").map((l) => l.trim()).filter(Boolean).slice(0, 12);
   const priceOnRequest = formData.get("priceOnRequest") === "on";
+  // Video links, one per line: only valid YouTube / Instagram post links are kept.
+  const videos = str(formData.get("videos"), 3000).split("\n").map((l) => videoEmbed(l)?.link).filter((l): l is string => !!l).slice(0, 5);
 
   const data = {
     name,
@@ -46,6 +48,7 @@ export async function saveProduct(formData: FormData) {
     description: str(formData.get("description"), 4000),
     highlights: JSON.stringify(highlights),
     images: JSON.stringify(images),
+    videos: JSON.stringify(videos),
   };
 
   try {

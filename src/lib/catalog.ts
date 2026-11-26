@@ -8,7 +8,7 @@ const arr = (s: string): string[] => { try { const v = JSON.parse(s); return Arr
 export const toProduct = (p: DbProduct): Product => ({
   slug: p.slug, name: p.name, brand: p.brand, category: p.category,
   price: p.price, mrp: p.mrp, stock: p.stock, featured: p.featured,
-  priceOnRequest: p.priceOnRequest, highlights: arr(p.highlights), description: p.description, images: arr(p.images),
+  priceOnRequest: p.priceOnRequest, highlights: arr(p.highlights), description: p.description, images: arr(p.images), videos: arr(p.videos ?? "[]"),
 });
 
 const order = [{ sortOrder: "asc" as const }, { id: "asc" as const }];

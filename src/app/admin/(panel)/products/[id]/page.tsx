@@ -19,7 +19,7 @@ export default async function EditProduct({ params, searchParams }: { params: Pr
     <div className="space-y-4">
       <p className="text-sm"><Link href="/admin/products" className="text-indigo-700">← Products</Link> · <Link href={`/product/${p.slug}`} target="_blank" className="text-indigo-700">View on shop ↗</Link></p>
       <h1 className="text-2xl font-bold">{p.name}</h1>
-      <ProductForm action={saveProduct} error={e} p={{ id: p.id, weightGrams: p.weightGrams, name: p.name, slug: p.slug, brand: p.brand, category: p.category, price: p.price, mrp: p.mrp, stock: p.stock, featured: p.featured, active: p.active, priceOnRequest: p.priceOnRequest, description: p.description, highlights: arr(p.highlights), images: arr(p.images) }} />
+      <ProductForm action={saveProduct} error={e} p={{ id: p.id, weightGrams: p.weightGrams, name: p.name, slug: p.slug, brand: p.brand, category: p.category, price: p.price, mrp: p.mrp, stock: p.stock, featured: p.featured, active: p.active, priceOnRequest: p.priceOnRequest, description: p.description, highlights: arr(p.highlights), images: arr(p.images), videos: arr(p.videos ?? "[]") }} />
     </div>
   );
 }

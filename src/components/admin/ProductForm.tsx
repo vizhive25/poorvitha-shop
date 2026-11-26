@@ -4,7 +4,7 @@ import { categories } from "@/lib/shop";
 
 export type FormProduct = {
   id?: number; weightGrams: number; name: string; slug: string; brand: string; category: string; price: number; mrp: number; stock: number;
-  featured: boolean; active: boolean; priceOnRequest: boolean; description: string; highlights: string[]; images: string[];
+  featured: boolean; active: boolean; priceOnRequest: boolean; description: string; highlights: string[]; images: string[]; videos: string[];
 };
 
 const inp = "w-full rounded-lg border border-slate-300 px-3 py-2 text-sm";
@@ -55,6 +55,7 @@ export default function ProductForm({ p, action, error }: { p: FormProduct; acti
         </div>
       </fieldset>
 
+      <label className="block text-sm font-medium">Video links (optional, one per line)<textarea name="videos" rows={3} defaultValue={p.videos.join("\n")} placeholder="https://www.youtube.com/watch?v=…  or  https://www.instagram.com/reel/…" className={inp} /><span className="mt-1 block text-xs font-normal text-slate-500">Only YouTube and Instagram post links work. They show as players on the product page. Use the brand&apos;s own official posts.</span></label>
       <label className="block text-sm font-medium">Key features (one per line)<textarea name="highlights" rows={5} defaultValue={p.highlights.join("\n")} className={inp} /></label>
       <label className="block text-sm font-medium">Description<textarea name="description" rows={4} defaultValue={p.description} className={inp} /></label>
 

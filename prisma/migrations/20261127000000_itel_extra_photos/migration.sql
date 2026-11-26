@@ -1,0 +1,9 @@
+-- More photos (different angles) for six itel products, from itel's official product pages.
+-- Only rows whose image list is still exactly the original are updated, so edits made in the admin are never overwritten.
+
+UPDATE `Product` SET `images` = '["/products/itel/itel-city-300-1.webp","/products/itel/itel-city-300-2.webp","/products/itel/itel-city-300-3.webp","/products/itel/itel-city-300-4.webp"]' WHERE `slug` = 'itel-city-300' AND `images` = '["/products/itel/itel-city-300-1.webp"]';
+UPDATE `Product` SET `images` = '["/products/itel/itel-muzik-1.webp","/products/itel/itel-muzik-2.webp","/products/itel/itel-muzik-3.webp","/products/itel/itel-muzik-4.webp"]' WHERE `slug` = 'itel-muzik' AND `images` = '["/products/itel/itel-muzik-1.webp","/products/itel/itel-muzik-2.webp"]';
+UPDATE `Product` SET `images` = '["/products/itel/itel-care-1.webp","/products/itel/itel-care-2.webp","/products/itel/itel-care-3.webp","/products/itel/itel-care-4.webp"]' WHERE `slug` = 'itel-care' AND `images` = '["/products/itel/itel-care-1.webp"]';
+UPDATE `Product` SET `images` = '["/products/itel/itel-tough-1.webp","/products/itel/itel-tough-2.webp","/products/itel/itel-tough-3.webp","/products/itel/itel-tough-4.webp"]' WHERE `slug` = 'itel-tough' AND `images` = '["/products/itel/itel-tough-1.webp"]';
+UPDATE `Product` SET `images` = '["/products/itel/itel-ace-4-shine-1.webp","/products/itel/itel-ace-4-shine-2.webp","/products/itel/itel-ace-4-shine-3.webp","/products/itel/itel-ace-4-shine-4.webp"]' WHERE `slug` = 'itel-ace-4-shine' AND `images` = '["/products/itel/itel-ace-4-shine-1.webp","/products/itel/itel-ace-4-shine-2.webp"]';
+UPDATE `Product` SET `images` = '["/products/itel/itel-blink-pro-1.webp","/products/itel/itel-blink-pro-2.webp","/products/itel/itel-blink-pro-3.webp","/products/itel/itel-blink-pro-4.webp","/products/itel/itel-blink-pro-5.webp"]' WHERE `slug` = 'itel-blink-pro' AND `images` = '["/products/itel/itel-blink-pro-1.webp"]';

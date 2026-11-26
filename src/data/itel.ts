@@ -20,7 +20,10 @@ export const itelProducts: Product[] = [
   ],
   "description": "120Hz Refresh Rate. 5G Octa-core Power. Immersive Punch-hole display.",
   "images": [
-   "/products/itel/itel-city-300-1.webp"
+   "/products/itel/itel-city-300-1.webp",
+   "/products/itel/itel-city-300-2.webp",
+   "/products/itel/itel-city-300-3.webp",
+   "/products/itel/itel-city-300-4.webp"
   ],
   "featured": false
  },
@@ -757,7 +760,10 @@ export const itelProducts: Product[] = [
   ],
   "description": "One-Touch SOS. Senior Mode. Loud & Clear Sound.",
   "images": [
-   "/products/itel/itel-care-1.webp"
+   "/products/itel/itel-care-1.webp",
+   "/products/itel/itel-care-2.webp",
+   "/products/itel/itel-care-3.webp",
+   "/products/itel/itel-care-4.webp"
   ],
   "featured": false
  },
@@ -778,7 +784,9 @@ export const itelProducts: Product[] = [
   "description": "Radiant Keypad. 1000mAh with Type-C Charging. King Voice.",
   "images": [
    "/products/itel/itel-ace-4-shine-1.webp",
-   "/products/itel/itel-ace-4-shine-2.webp"
+   "/products/itel/itel-ace-4-shine-2.webp",
+   "/products/itel/itel-ace-4-shine-3.webp",
+   "/products/itel/itel-ace-4-shine-4.webp"
   ],
   "featured": false
  },
@@ -798,7 +806,9 @@ export const itelProducts: Product[] = [
   "description": "Super Loud 3D Sound. 2500mAh Mega Battery. Bluetooth Ready.",
   "images": [
    "/products/itel/itel-muzik-1.webp",
-   "/products/itel/itel-muzik-2.webp"
+   "/products/itel/itel-muzik-2.webp",
+   "/products/itel/itel-muzik-3.webp",
+   "/products/itel/itel-muzik-4.webp"
   ],
   "featured": false
  },
@@ -817,7 +827,10 @@ export const itelProducts: Product[] = [
   ],
   "description": "Anti-fall 2m Protection. IP54 Water & Dust resistance. Free Shock-proof Silicone Case.",
   "images": [
-   "/products/itel/itel-tough-1.webp"
+   "/products/itel/itel-tough-1.webp",
+   "/products/itel/itel-tough-2.webp",
+   "/products/itel/itel-tough-3.webp",
+   "/products/itel/itel-tough-4.webp"
   ],
   "featured": false
  },
@@ -1248,7 +1261,11 @@ export const itelProducts: Product[] = [
   ],
   "description": "4G e-SIM Sharing. 1.5\" AMOLED Display. Bluetooth Calling.",
   "images": [
-   "/products/itel/itel-blink-pro-1.webp"
+   "/products/itel/itel-blink-pro-1.webp",
+   "/products/itel/itel-blink-pro-2.webp",
+   "/products/itel/itel-blink-pro-3.webp",
+   "/products/itel/itel-blink-pro-4.webp",
+   "/products/itel/itel-blink-pro-5.webp"
   ],
   "featured": false
  },
