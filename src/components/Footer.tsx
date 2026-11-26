@@ -21,6 +21,8 @@ export default function Footer() {
         <div>
           <p className="font-semibold text-white">Visit / contact</p>
           <p className="mt-2">{site.address}</p>
+          <p className="mt-1 space-x-3"><a href={site.mapsUrl} target="_blank" rel="noopener noreferrer" className="underline hover:text-white">Find our shop on Google Maps</a></p>
+          <p className="mt-1"><a href={site.instagram} target="_blank" rel="noopener noreferrer" className="underline hover:text-white">Instagram {site.instagramHandle}</a></p>
           <p>Customer support:<br /><a href={`tel:${site.phone.replace(/\s/g, "")}`} className="hover:text-white">{site.phone}</a><br /><a href={`tel:${site.phone2.replace(/\s/g, "")}`} className="hover:text-white">{site.phone2}</a></p><p>{site.email}</p><p>{site.hours}</p>
         </div>
       </div>

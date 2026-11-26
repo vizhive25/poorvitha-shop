@@ -13,6 +13,10 @@ export const site = {
   address: "No.15/2, 20th Cross, 5th Main Road, K.P Agrahara, Magadi Main Road, Bangalore – 560023",
   gstin: "GSTIN: 29BJTPR0034E2Z0",
   hours: "10:00 AM – 9:00 PM",
+  instagram: "https://www.instagram.com/ravi143306",
+  instagramHandle: "@ravi143306",
+  instagramFollowers: "196K", // update now and then
+  mapsUrl: "https://maps.app.goo.gl/TT69yYfzMLm3wYAr9",
   grievanceOfficer: "Ravi, Customer Care Officer, Poorvitha Mobiles",
   // Largest order (₹) allowed as Cash on Delivery; bigger orders must be paid online. 0 = no limit. Override with COD_MAX_AMOUNT.
   codMax: Number(process.env.COD_MAX_AMOUNT ?? 3000),

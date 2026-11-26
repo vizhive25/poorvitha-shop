@@ -103,6 +103,10 @@ export default async function Home() {
             <a href={`tel:${site.phone.replace(/\s/g, "")}`} className="rounded-full border border-white/40 px-6 py-3 font-semibold hover:bg-white/10">Call {site.phone}</a>
           </div>
           <p className="mt-4 text-sm text-neutral-400">{site.hours} · {site.address}</p>
+          <div className="mt-5 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm">
+            <a href={site.instagram} target="_blank" rel="noopener noreferrer" className="underline hover:text-neutral-300">Follow us on Instagram · {site.instagramFollowers} followers</a>
+            <a href={site.mapsUrl} target="_blank" rel="noopener noreferrer" className="underline hover:text-neutral-300">Find our shop on Google Maps</a>
+          </div>
         </section>
       </Reveal>
     </div>
