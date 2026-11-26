@@ -50,7 +50,7 @@ const pages: Record<string, { title: string; body: string[] }> = {
 
   warranty: { title: "Warranty", body: [
     `Last updated: ${UPDATED}`,
-    "Products carry the manufacturer's warranty where applicable; the warranty period is shown on the product page or in the box. Warranty service is provided by the brand's authorised service centres, and we will help you with the process.",
+    "Products carry the manufacturer's warranty where applicable; the warranty period is printed on the box or the manufacturer's warranty card (and in the product features where the brand states it). If you are unsure, ask us before you buy. Warranty service is provided by the brand's authorised service centres, and we will help you with the process.",
     "Please keep your invoice and the original packaging. The invoice is usually needed as proof of purchase for warranty claims.",
     "Physical, liquid, burn or tamper damage, damage from misuse, and normal wear are not covered.",
     "A product that is dead on arrival or damaged in transit is handled under our Returns policy, not the warranty."] },

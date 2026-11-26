@@ -8,10 +8,11 @@ export default function Gallery({ p }: { p: Product }) {
   const imgs = p.images ?? [];
   const [i, setI] = useState(0);
   return (
-    <div className="max-w-md">
-      <div className="overflow-hidden rounded-2xl bg-neutral-100"><ProductImage p={p} src={imgs[i]} className="rounded-none bg-transparent mix-blend-multiply" /></div>
+    // w-full + min-w-0 keep the gallery (and its sideways-scrolling thumbnail strip) inside the screen on small phones.
+    <div className="w-full min-w-0 max-w-md">
+      <div className="overflow-hidden rounded-2xl bg-neutral-100"><ProductImage p={p} src={imgs[i]} priority className="rounded-none bg-transparent mix-blend-multiply" /></div>
       {imgs.length > 1 && (
-        <div className="mt-3 flex gap-2 overflow-x-auto">
+        <div className="no-scrollbar mt-3 flex max-w-full gap-2 overflow-x-auto">
           {imgs.map((src, n) => (
             // eslint-disable-next-line @next/next/no-img-element
             <button key={src} onClick={() => setI(n)} aria-label={`Show image ${n + 1}`}

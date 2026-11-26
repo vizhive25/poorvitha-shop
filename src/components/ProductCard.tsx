@@ -3,11 +3,11 @@ import Link from "next/link";
 import { Product, inr, thumb } from "@/lib/shop";
 import { useCart } from "./CartProvider";
 
-export function ProductImage({ p, className = "", src, small = false }: { p: Product; className?: string; src?: string; small?: boolean }) {
+export function ProductImage({ p, className = "", src, small = false, priority = false }: { p: Product; className?: string; src?: string; small?: boolean; priority?: boolean }) {
   const img = src ?? p.images?.[0];
   if (img)
     // eslint-disable-next-line @next/next/no-img-element
-    return <img src={small ? thumb(img) : img} alt={p.name} width={600} height={600} loading="lazy" decoding="async"
+    return <img src={small ? thumb(img) : img} alt={p.name} width={600} height={600} loading={priority ? "eager" : "lazy"} fetchPriority={priority ? "high" : undefined} decoding="async"
       onError={small ? (e) => { if (e.currentTarget.src.includes("/_t/")) e.currentTarget.src = img; } : undefined} className={`aspect-square w-full rounded-lg bg-white object-contain ${className}`} />;
   const hue = (p.brand.charCodeAt(0) * 37 + p.category.length * 23) % 360;
   return (

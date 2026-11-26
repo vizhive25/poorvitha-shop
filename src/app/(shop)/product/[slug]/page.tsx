@@ -12,7 +12,20 @@ export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const p = await getProductBySlug((await params).slug);
-  return p ? { title: p.name, description: `${p.name} – ${p.highlights.join(", ")}. Buy at Poorvitha Mobiles.` } : {};
+  if (!p) return {};
+  // Keep the description search-friendly (about 155 characters) instead of pasting every feature.
+  const tail = " Buy at Poorvitha Mobiles.";
+  const feats = p.highlights.join(", ");
+  const full = `${p.name} – ${feats}.`;
+  const description = (full.length + tail.length > 160 ? full.slice(0, 160 - tail.length - 1).replace(/[\s,–-]+\S*$/, "") + "…" : full) + tail;
+  const image = p.images?.[0];
+  return {
+    title: p.name,
+    description,
+    // Share previews (WhatsApp, Instagram, Facebook) show this product, not the shop logo.
+    openGraph: { type: "website", siteName: site.name, locale: "en_IN", title: p.name, description, url: `/product/${p.slug}`, ...(image ? { images: [{ url: image, alt: p.name }] } : {}) },
+    twitter: { card: image ? "summary_large_image" : "summary", title: p.name, description, ...(image ? { images: [image] } : {}) },
+  };
 }
 
 export default async function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
@@ -21,7 +34,8 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
   const cat = getCategory(p.category);
   const off = !p.priceOnRequest && p.mrp > p.price;
   const ld = {
-    "@context": "https://schema.org", "@type": "Product", name: p.name, brand: { "@type": "Brand", name: p.brand }, description: p.description,
+    "@context": "https://schema.org", "@type": "Product", name: p.name, brand: { "@type": "Brand", name: p.brand }, description: p.description, sku: p.slug,
+    ...(p.images?.length ? { image: p.images.map((u) => (u.startsWith("http") ? u : `${site.url}${u}`)) } : {}),
     ...(p.priceOnRequest ? {} : { offers: { "@type": "Offer", priceCurrency: "INR", price: p.price, availability: p.stock > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock", url: `${site.url}/product/${p.slug}`, seller: { "@type": "Organization", name: site.name } } }),
   };
   const videos = (p.videos ?? []).map((v) => videoEmbed(v)).filter((v): v is NonNullable<ReturnType<typeof videoEmbed>> => !!v);
@@ -34,7 +48,8 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(ld).replace(/</g, "\\u003c") }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(crumbs).replace(/</g, "\\u003c") }} />
       <p className="mb-4 text-sm text-neutral-500"><Link href="/" className="hover:text-neutral-900">Home</Link> / <Link href={`/category/${p.category}`} className="hover:text-neutral-900">{cat?.name}</Link></p>
-      <div className="grid gap-8 md:grid-cols-2">
+      {/* min-w-0: lets both columns shrink below their content width, so a long photo strip never widens the page on small phones. */}
+      <div className="grid gap-8 md:grid-cols-2 [&>*]:min-w-0">
         <Gallery p={p} />
         <div>
           <p className="text-xs font-medium uppercase tracking-widest text-neutral-500">{p.brand}</p>
@@ -53,13 +68,13 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
           ) : <AddToCart product={p} />}
           {!p.priceOnRequest && (
             <ul className="mt-5 grid gap-2 rounded-2xl bg-neutral-100 p-4 text-sm sm:grid-cols-2">
-              <li><b>Delivery:</b> 3–7 business days across India</li>
+              <li><b>Delivery:</b> dispatched in 1–2 business days, then 3–7 business days across India</li>
               <li><b>Shipping:</b> {p.price >= site.freeShippingAbove ? "Free on this item" : `Free above ₹${site.freeShippingAbove}, else ₹${site.shippingFee}`}</li>
               <li><b>Payment:</b> UPI, cards, net banking or Cash on Delivery</li>
               <li><b>Returns:</b> 7-day replacement for defects</li>
             </ul>
           )}
-          <p className="mt-4 text-xs text-neutral-500">Sold by {site.name}. Warranty as per brand policy. See <Link className="underline" href="/info/return-policy">return policy</Link> and <Link className="underline" href="/info/warranty">warranty</Link>.</p>
+          <p className="mt-4 text-xs text-neutral-500">Sold by {site.name}. Manufacturer&apos;s warranty applies; the period is printed on the box or warranty card. See <Link className="underline" href="/info/return-policy">return policy</Link> and <Link className="underline" href="/info/warranty">warranty</Link>.</p>
         </div>
       </div>
       {videos.length > 0 && (

@@ -22,7 +22,7 @@ export default function AddToCart({ product }: { product: Product }) {
     return () => io.disconnect();
   }, []);
 
-  const buyNow = () => { add(product); router.push("/checkout"); };
+  const buyNow = () => { add(product, 1, true); router.push("/checkout"); };
   return (
     <>
       <div ref={inline} className="mt-4 flex gap-3">
