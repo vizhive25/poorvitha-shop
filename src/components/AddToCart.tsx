@@ -10,8 +10,8 @@ export default function AddToCart({ product }: { product: Product }) {
   const router = useRouter();
   return (
     <div className="mt-4 flex gap-3">
-      <button disabled={disabled} onClick={() => add(product)} className="rounded-lg border border-indigo-700 px-5 py-3 font-semibold text-indigo-700 disabled:opacity-40">Add to cart</button>
-      <button disabled={disabled} onClick={() => { add(product); router.push("/checkout"); }} className="rounded-lg bg-indigo-700 px-5 py-3 font-semibold text-white disabled:bg-slate-300">Buy now</button>
+      <button disabled={disabled} onClick={() => add(product)} className="rounded-full border border-neutral-900 px-6 py-3 font-semibold text-neutral-900 hover:bg-neutral-100 disabled:opacity-40">Add to cart</button>
+      <button disabled={disabled} onClick={() => { add(product); router.push("/checkout"); }} className="rounded-full bg-neutral-900 px-6 py-3 font-semibold text-white hover:bg-neutral-700 disabled:bg-neutral-300">Buy now</button>
     </div>
   );
 }

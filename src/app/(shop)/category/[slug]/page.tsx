@@ -17,9 +17,9 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
   const items = await listProducts({ category: c.slug });
   return (
     <div>
-      <h1 className="text-2xl font-bold">{c.name}</h1>
-      <p className="mb-4 text-slate-500">{c.blurb}</p>
-      <div className="grid grid-cols-2 gap-4 md:grid-cols-4">{items.map((p) => <ProductCard key={p.slug} p={p} />)}</div>
+      <h1 className="text-3xl font-extrabold tracking-tight">{c.name}</h1>
+      <p className="mb-6 mt-1 text-sm text-neutral-500">{items.length} products · {c.blurb}</p>
+      <div className="grid grid-cols-2 gap-x-4 gap-y-8 md:grid-cols-4">{items.map((p) => <ProductCard key={p.slug} p={p} />)}</div>
     </div>
   );
 }

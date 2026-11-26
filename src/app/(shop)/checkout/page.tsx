@@ -6,7 +6,7 @@ import { useCart } from "@/components/CartProvider";
 import { inr } from "@/lib/shop";
 import { site } from "@/config/site";
 
-const f = "w-full rounded-lg border border-slate-300 px-3 py-2";
+const f = "w-full rounded-xl border border-neutral-300 bg-neutral-50 px-4 py-2.5 outline-none focus:border-neutral-900 focus:bg-white";
 
 type RzInit = { keyId: string; orderId: string; amount: number; name: string; phone: string; email: string };
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -35,7 +35,7 @@ export default function Checkout() {
     const rp = new window.Razorpay({
       key: rz.keyId, amount: rz.amount, currency: "INR", name: site.name, description: `Order ${orderId}`, order_id: rz.orderId,
       prefill: { name: rz.name, contact: rz.phone, email: rz.email },
-      theme: { color: "#4338ca" },
+      theme: { color: "#171717" },
       handler: async (resp: { razorpay_order_id: string; razorpay_payment_id: string; razorpay_signature: string }) => {
         try {
           const r = await fetch("/api/payments/verify", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(resp) });
@@ -73,7 +73,7 @@ export default function Checkout() {
     <form onSubmit={submit} className="grid gap-8 md:grid-cols-3">
       {online && <Script src="https://checkout.razorpay.com/v1/checkout.js" strategy="lazyOnload" />}
       <div className="space-y-3 md:col-span-2">
-        <h1 className="text-2xl font-bold">Checkout</h1>
+        <h1 className="text-3xl font-extrabold tracking-tight">Checkout</h1>
         <fieldset disabled={!!pending} className="space-y-3">
           <input name="name" required minLength={2} placeholder="Full name" className={f} autoComplete="name" />
           <div className="grid gap-3 md:grid-cols-2">
@@ -87,7 +87,7 @@ export default function Checkout() {
             <input name="pincode" required pattern="[1-9][0-9]{5}" title="6-digit PIN code" placeholder="PIN code" className={f} inputMode="numeric" />
           </div>
         </fieldset>
-        <fieldset disabled={!!pending} className="space-y-2 rounded-lg border bg-white p-3 text-sm">
+        <fieldset disabled={!!pending} className="space-y-2 rounded-2xl bg-neutral-100 p-4 text-sm">
           <legend className="px-1 font-semibold">Payment</legend>
           {online && (
             <label className="flex items-center gap-2"><input type="radio" name="payment" checked={method === "ONLINE"} onChange={() => setMethod("ONLINE")} /> Pay online <span className="text-slate-500">(UPI, cards, net banking, wallets)</span></label>
@@ -98,12 +98,12 @@ export default function Checkout() {
         {pending && <p className="rounded bg-amber-50 p-3 text-sm text-amber-900">Order {pending.orderId} is waiting for payment. Items are held for 30 minutes.</p>}
         {err && <p role="alert" className="text-sm text-red-600">{err}</p>}
       </div>
-      <aside className="h-fit rounded-xl border bg-white p-4 text-sm">
+      <aside className="h-fit rounded-2xl border border-neutral-200 bg-white p-5 text-sm">
         <h2 className="font-bold">Your order — {site.name}</h2>
         <ul className="mt-2 space-y-1">{lines.map((l) => <li key={l.slug} className="flex justify-between gap-2"><span>{l.name} × {l.qty}</span><span>{inr(l.price * l.qty)}</span></li>)}</ul>
         <div className="mt-3 flex justify-between"><span>Shipping</span><span>{shipping ? inr(shipping) : "Free"}</span></div>
         <div className="flex justify-between border-t pt-2 text-base font-bold"><span>Total ({inr(subtotal)} + shipping)</span><span>{inr(total)}</span></div>
-        <button disabled={busy} className="mt-4 w-full rounded-lg bg-indigo-700 py-3 font-semibold text-white disabled:bg-slate-400">
+        <button disabled={busy} className="mt-4 w-full rounded-full bg-neutral-900 py-3 font-semibold text-white hover:bg-neutral-700 disabled:bg-neutral-400">
           {busy ? "Please wait…" : pending ? "Retry payment" : method === "ONLINE" ? `Pay ${inr(total)}` : "Place order"}
         </button>
       </aside>

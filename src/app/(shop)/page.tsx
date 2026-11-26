@@ -5,6 +5,7 @@ import HeroCarousel, { Slide } from "@/components/HeroCarousel";
 import ProductRow from "@/components/ProductRow";
 import Reveal from "@/components/Reveal";
 import { site } from "@/config/site";
+import { InstagramIcon, MapPinIcon, WhatsAppIcon } from "@/components/Icons";
 
 const slideDefs = [
   { slug: "itel-a100", title: "Military-grade durability, everyday price", sub: "Shop the latest itel smartphones with big batteries and 90Hz displays.", href: "/category/mobile-phones", cta: "Shop phones", from: "#0a0a0a", to: "#3f3f46" },
@@ -99,13 +100,13 @@ export default async function Home() {
           <h2 className="text-3xl font-extrabold tracking-tight md:text-4xl">Can&apos;t find it? We&apos;ll get it.</h2>
           <p className="mx-auto mt-3 max-w-xl text-neutral-300">Looking for a phone, accessory or gadget that isn&apos;t listed? Tell us what you need and we&apos;ll try to source it for you.</p>
           <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
-            <a href={ask} target="_blank" rel="noopener noreferrer" className="rounded-full bg-white px-6 py-3 font-semibold text-neutral-900 hover:bg-neutral-200">Ask on WhatsApp</a>
+            <a href={ask} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 font-semibold text-neutral-900 hover:bg-neutral-200"><WhatsAppIcon />Ask on WhatsApp</a>
             <a href={`tel:${site.phone.replace(/\s/g, "")}`} className="rounded-full border border-white/40 px-6 py-3 font-semibold hover:bg-white/10">Call {site.phone}</a>
           </div>
           <p className="mt-4 text-sm text-neutral-400">{site.hours} · {site.address}</p>
           <div className="mt-5 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm">
-            <a href={site.instagram} target="_blank" rel="noopener noreferrer" className="underline hover:text-neutral-300">Follow us on Instagram · {site.instagramFollowers} followers</a>
-            <a href={site.mapsUrl} target="_blank" rel="noopener noreferrer" className="underline hover:text-neutral-300">Find our shop on Google Maps</a>
+            <a href={site.instagram} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 hover:text-neutral-300"><InstagramIcon />Follow us on Instagram · {site.instagramFollowers} followers</a>
+            <a href={site.mapsUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 hover:text-neutral-300"><MapPinIcon />Find our shop on Google Maps</a>
           </div>
         </section>
       </Reveal>
