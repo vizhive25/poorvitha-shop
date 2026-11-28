@@ -1,7 +1,7 @@
 // Server-only catalogue access (reads the database).
 import type { Product as DbProduct } from "@prisma/client";
 import { db } from "./db";
-import type { Product } from "./shop";
+import { categories, type Product } from "./shop";
 
 const arr = (s: string): string[] => { try { const v = JSON.parse(s); return Array.isArray(v) ? v.map(String) : []; } catch { return []; } };
 
@@ -19,8 +19,20 @@ export async function listProducts(opts: { category?: string; q?: string; featur
     orderBy: order,
   });
   let list = rows.map(toProduct);
-  const q = opts.q?.trim().toLowerCase();
-  if (q) list = list.filter((p) => `${p.name} ${p.brand}`.toLowerCase().includes(q));
+  // Forgiving search: every word typed must appear somewhere in the product's name, brand, category or features,
+  // in any order, and spacing doesn't matter ("powerbank" finds "Power Bank", "smart watch" finds smartwatches).
+  const words = (opts.q ?? "").toLowerCase().split(/[^a-z0-9]+/).filter(Boolean);
+  if (words.length) {
+    const catName = (slug: string) => categories.find((c) => c.slug === slug)?.name ?? "";
+    list = list.filter((p) => {
+      const hay = `${p.name} ${p.brand} ${catName(p.category)} ${p.highlights.join(" ")}`.toLowerCase();
+      const tokens = hay.split(/[^a-z0-9]+/).filter(Boolean);
+      const pairs = tokens.slice(1).map((t, i) => tokens[i] + t); // "power" + "bank" also answers "powerbank"
+      const compact = tokens.join("");
+      // Short words ("a50", "s24") must start a word, so they don't match inside other text; longer words may match inside a word ("watch" in "smartwatches").
+      return words.every((w) => tokens.some((t) => t.startsWith(w)) || pairs.some((t) => t.startsWith(w)) || (w.length >= 5 && compact.includes(w)));
+    });
+  }
   const key = (p: Product) => (p.priceOnRequest ? 1e12 : p.price);
   // Products without a price go last, so shoppers see things they can buy first (order is otherwise unchanged).
   if (!opts.sort) list = [...list.filter((p) => !p.priceOnRequest), ...list.filter((p) => p.priceOnRequest)];

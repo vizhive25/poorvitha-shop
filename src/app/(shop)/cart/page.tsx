@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useCart } from "@/components/CartProvider";
-import { inr } from "@/lib/shop";
+import { inr, thumb } from "@/lib/shop";
 import { site } from "@/config/site";
 
 export default function CartPage() {
@@ -12,13 +12,26 @@ export default function CartPage() {
       <div className="space-y-3 md:col-span-2">
         <h1 className="text-3xl font-extrabold tracking-tight">Shopping cart</h1>
         {lines.map((l) => (
-          <div key={l.slug} className="flex items-center justify-between gap-3 rounded-2xl bg-neutral-100 p-4">
-            <div><Link href={`/product/${l.slug}`} className="font-medium">{l.name}</Link><p className="text-sm text-neutral-500">{inr(l.price)} each</p></div>
-            <div className="flex items-center gap-2">
-              <button aria-label="Decrease" onClick={() => setQty(l.slug, l.qty - 1)} className="h-11 w-11 rounded-full border border-neutral-300 bg-white hover:bg-neutral-200">−</button>
-              <span className="w-6 text-center">{l.qty}</span>
-              <button aria-label="Increase" onClick={() => setQty(l.slug, l.qty + 1)} className="h-11 w-11 rounded-full border border-neutral-300 bg-white hover:bg-neutral-200">+</button>
-              <span className="w-20 text-right font-semibold">{inr(l.price * l.qty)}</span>
+          <div key={l.slug} className="flex gap-3 rounded-2xl bg-neutral-100 p-3 sm:p-4">
+            <Link href={`/product/${l.slug}`} className="h-20 w-20 shrink-0 overflow-hidden rounded-xl bg-white" aria-hidden tabIndex={-1}>
+              {l.image
+                // eslint-disable-next-line @next/next/no-img-element
+                ? <img src={thumb(l.image)} alt="" width={80} height={80} loading="lazy" className="h-full w-full object-contain" />
+                : <span className="flex h-full items-center justify-center text-[10px] text-neutral-400">No photo</span>}
+            </Link>
+            <div className="min-w-0 flex-1">
+              <Link href={`/product/${l.slug}`} className="line-clamp-2 font-medium leading-snug hover:underline">{l.name}</Link>
+              <p className="mt-0.5 text-sm text-neutral-500">{inr(l.price)} each</p>
+              <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1">
+                <div className="flex items-center gap-1">
+                  <button aria-label={`Decrease quantity of ${l.name}`} onClick={() => setQty(l.slug, l.qty - 1)} className="h-11 w-11 rounded-full border border-neutral-300 bg-white hover:bg-neutral-200">−</button>
+                  <span className="w-7 text-center" aria-live="polite">{l.qty}</span>
+                  <button aria-label={`Increase quantity of ${l.name}`} onClick={() => setQty(l.slug, l.qty + 1)} disabled={l.qty >= l.stock} className="h-11 w-11 rounded-full border border-neutral-300 bg-white hover:bg-neutral-200 disabled:opacity-40">+</button>
+                </div>
+                <button onClick={() => setQty(l.slug, 0)} className="min-h-11 px-2 text-sm text-neutral-600 underline hover:text-neutral-900" aria-label={`Remove ${l.name} from cart`}>Remove</button>
+                <span className="ml-auto font-semibold">{inr(l.price * l.qty)}</span>
+              </div>
+              {l.qty >= l.stock && <p className="mt-1 text-xs text-neutral-500">Maximum available quantity.</p>}
             </div>
           </div>))}
       </div>
@@ -31,6 +44,11 @@ export default function CartPage() {
         </dl>
         {shipping > 0 && <p className="mt-2 text-xs text-neutral-500">Add {inr(site.freeShippingAbove - subtotal)} more for free delivery.</p>}
         <Link href="/checkout" className="mt-4 block rounded-full bg-neutral-900 py-3 text-center font-semibold text-white hover:bg-neutral-700">Proceed to checkout</Link>
+        <ul className="mt-4 space-y-1 text-xs text-neutral-600">
+          <li>Dispatched in 1–2 business days, delivered in 3–7 business days.</li>
+          <li>Pay online, or Cash on Delivery on smaller orders.</li>
+          <li>7-day replacement for defective items. <Link href="/info/return-policy" className="underline">Returns policy</Link></li>
+        </ul>
       </aside>
     </div>
   );

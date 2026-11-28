@@ -80,7 +80,7 @@ export default async function Home() {
           <p className="mb-4 px-6 text-sm font-semibold uppercase tracking-widest text-neutral-400">Browse the range</p>
           <div className="flex w-max gap-6 marquee">
             {[...marquee, ...marquee].map((p, n) => (
-              <Link key={p.slug + n} href={`/product/${p.slug}`} className="flex h-40 w-40 shrink-0 items-center justify-center rounded-2xl bg-white/95 p-3 transition hover:scale-105">
+              <Link key={p.slug + n} href={`/product/${p.slug}`} {...(n >= marquee.length ? { "aria-hidden": true, tabIndex: -1 } : {})} className="flex h-40 w-40 shrink-0 items-center justify-center rounded-2xl bg-white/95 p-3 transition hover:scale-105">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={thumb(p.images![0])} alt={p.name} width={160} height={160} loading="lazy" decoding="async" className="max-h-full max-w-full object-contain" />
               </Link>

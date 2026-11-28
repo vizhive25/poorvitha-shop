@@ -11,8 +11,9 @@ export default function ShopLayout({ children }: { children: React.ReactNode }) 
   const logo = hasLogo() ? "/brand/logo-sm.png" : undefined;
   return (
     <CartProvider>
+      <a href="#main" className="sr-only z-50 rounded-full bg-neutral-900 px-4 py-2 text-white focus:not-sr-only focus:fixed focus:left-3 focus:top-3">Skip to main content</a>
       <Header logo={logo} />
-      <main className="mx-auto max-w-7xl px-4 py-6">{children}</main>
+      <main id="main" tabIndex={-1} className="mx-auto max-w-7xl px-4 py-6 outline-none">{children}</main>
       <Footer />
     </CartProvider>
   );

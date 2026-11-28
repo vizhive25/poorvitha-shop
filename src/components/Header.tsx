@@ -16,7 +16,7 @@ export default function Header({ logo }: { logo?: string }) {
     <form role="search" className="w-full" onSubmit={(e) => { e.preventDefault(); router.push(`/shop?q=${encodeURIComponent(q)}`); }}>
       <label htmlFor={id} className="sr-only">Search products</label>
       <input id={id} type="search" enterKeyHint="search" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search phones, watches, earbuds…"
-        className="w-full rounded-full border border-neutral-300 bg-neutral-50 px-4 py-2.5 text-sm outline-none focus:border-neutral-900 focus:bg-white" />
+        className="w-full rounded-full border border-neutral-300 bg-neutral-50 px-4 py-2.5 text-sm focus:border-neutral-900 focus:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-neutral-900" />
     </form>
   );
   const categoryLinks = (

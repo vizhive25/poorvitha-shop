@@ -19,14 +19,14 @@ export default async function Track({ searchParams }: { searchParams: Promise<{ 
   const o = !limited && id.trim() && /^[6-9]\d{9}$/.test(phone.trim())
     ? await db.order.findFirst({ where: { orderId: id.trim().toUpperCase(), phone: phone.trim() }, select: { orderId: true, status: true, awb: true, courier: true, shippingStatus: true, createdAt: true } })
     : null;
-  const inp = "w-full rounded-full border border-neutral-300 bg-neutral-50 px-4 py-2 outline-none focus:border-neutral-900 focus:bg-white";
+  const inp = "w-full rounded-full border border-neutral-300 bg-neutral-50 px-4 py-2 focus:border-neutral-900 focus:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-neutral-900";
   const at = o ? STEPS.indexOf(o.status) : -1;
   return (
     <div className="mx-auto max-w-lg space-y-5">
       <h1 className="text-3xl font-extrabold tracking-tight">Track your order</h1>
       <form className="space-y-3 rounded-2xl bg-neutral-100 p-5">
-        <input name="id" defaultValue={id} required placeholder="Order ID (e.g. PM…)" className={inp} />
-        <input name="phone" defaultValue={phone} required pattern="[6-9][0-9]{9}" placeholder="Mobile number used on the order" className={inp} inputMode="numeric" />
+        <label className="block"><span className="mb-1 block text-xs font-medium text-neutral-600">Order ID</span><input name="id" defaultValue={id} required placeholder="e.g. PM…" className={inp} /></label>
+        <label className="block"><span className="mb-1 block text-xs font-medium text-neutral-600">Mobile number used on the order</span><input name="phone" defaultValue={phone} required pattern="[6-9][0-9]{9}" placeholder="10-digit mobile number" className={inp} inputMode="numeric" autoComplete="tel-national" /></label>
         <button className="w-full rounded-full bg-neutral-900 py-2 font-semibold text-white hover:bg-neutral-700">Track</button>
       </form>
       {limited && <p role="alert" className="text-sm text-red-600">Too many lookups. Please try again in a few minutes.</p>}
