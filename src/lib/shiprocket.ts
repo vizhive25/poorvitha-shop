@@ -15,7 +15,7 @@ async function login(force = false): Promise<string> {
     signal: AbortSignal.timeout(15000),
   });
   const d = await r.json().catch(() => ({}));
-  if (!r.ok || !d.token) throw new Error(`Shiprocket login failed (${r.status}). Check SHIPROCKET_EMAIL / SHIPROCKET_PASSWORD (use the API user).`);
+  if (!r.ok || !d.token) throw Object.assign(new Error(`Shiprocket login failed (${r.status}). Check SHIPROCKET_EMAIL / SHIPROCKET_PASSWORD (use the API user).`), { auth: true });
   cached = { token: d.token, at: Date.now() };
   return d.token;
 }
@@ -32,7 +32,7 @@ async function call(method: "GET" | "POST", path: string, body?: unknown): Promi
     const d = await r.json().catch(() => ({}));
     if (!r.ok) {
       const msg = d?.message || (d?.errors ? JSON.stringify(d.errors) : "") || `HTTP ${r.status}`;
-      throw new Error(`Shiprocket ${path}: ${msg}`);
+      throw Object.assign(new Error(`Shiprocket ${path}: ${msg}`), { status: r.status });
     }
     return d;
   }
@@ -92,11 +92,38 @@ export async function pincodeServiceable(pincode: string, cod: boolean): Promise
     svcCache.set(key, { ok, at: Date.now() });
     return ok;
   } catch (e) {
-    // Shiprocket answers 404 "no courier serviceability" for places nobody delivers to; anything else (network, login) is "unknown".
-    if (/serviceab|no courier|not available/i.test((e as Error).message)) { svcCache.set(key, { ok: false, at: Date.now() }); return false; }
-    console.error("serviceability check failed", e);
+    const err = e as Error & { status?: number; auth?: boolean };
+    // A login problem or a Shiprocket outage means "unknown": the order is allowed through.
+    // But when Shiprocket itself answers "no" (404 / 400 / 422, e.g. an unknown PIN code or no courier), the PIN code is not deliverable.
+    if (!err.auth && (err.status === 400 || err.status === 404 || err.status === 422 || /serviceab|no courier|not available|invalid.*(pin|post)/i.test(err.message))) {
+      svcCache.set(key, { ok: false, at: Date.now() });
+      return false;
+    }
+    console.error("serviceability check failed", err.message);
     return null;
   }
+}
+
+/** For the owner's "Test Shiprocket" page: reports what Shiprocket says, without exposing any secret. */
+export async function shiprocketDiagnose(pincode: string, cod: boolean) {
+  const out: Record<string, unknown> = { configured: shiprocketEnabled(), pickupLocationSet: !!process.env.SHIPROCKET_PICKUP_LOCATION, webhookTokenSet: !!process.env.SHIPROCKET_WEBHOOK_TOKEN, pickupPincode: process.env.SHIPROCKET_PICKUP_PINCODE || "560023 (default)" };
+  if (!shiprocketEnabled()) return { ...out, login: "not configured" };
+  try { await login(true); out.login = "ok"; } catch (e) { return { ...out, login: (e as Error).message }; }
+  try {
+    const token = await login();
+    const r = await fetch(`${BASE}/courier/serviceability/?pickup_postcode=${process.env.SHIPROCKET_PICKUP_PINCODE || "560023"}&delivery_postcode=${encodeURIComponent(pincode)}&cod=${cod ? 1 : 0}&weight=0.5`, { headers: { Authorization: `Bearer ${token}` }, signal: AbortSignal.timeout(20000) });
+    const d = await r.json().catch(() => ({}));
+    out.serviceability = { pincode, cod, httpStatus: r.status, message: d?.message ?? null, couriersAvailable: d?.data?.available_courier_companies?.length ?? 0 };
+  } catch (e) { out.serviceability = { error: (e as Error).message }; }
+  try {
+    const token = await login();
+    const r = await fetch(`${BASE}/settings/company/pickup`, { headers: { Authorization: `Bearer ${token}` }, signal: AbortSignal.timeout(20000) });
+    const d = await r.json().catch(() => ({}));
+    const list: { pickup_location?: string; pin_code?: string }[] = d?.data?.shipping_address ?? [];
+    const want = (process.env.SHIPROCKET_PICKUP_LOCATION ?? "").trim();
+    out.pickupAddresses = { httpStatus: r.status, found: list.length, yourSettingMatchesOne: list.some((a) => a.pickup_location === want), nicknames: list.map((a) => a.pickup_location).slice(0, 10) };
+  } catch (e) { out.pickupAddresses = { error: (e as Error).message }; }
+  return out;
 }
 
 /** Assigns a courier (Shiprocket auto-picks one per your account rules) and returns the AWB. */
